@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import com.example.demo.repositories.UserRepository
+import org.springframework.data.repository.findByIdOrNull
 
 @Controller
 class FormHtmlController {
@@ -17,31 +18,42 @@ class FormHtmlController {
 
     @RequestMapping(
         value = ["/form", "/form/{userid}"],
-        method = [RequestMethod.GET, RequestMethod.POST]
+        method = [RequestMethod.GET]
     )
-    fun form(
-        @PathVariable("userid") userid:Long?, // PathVariable : URL 경로에 변수를 넣어주는 어노테이션
-        user : User?,
-        model : Model
-    ) : String {
+    fun getForm(
+        @PathVariable("userid") userid: Long?, // PathVariable : URL 경로에 변수를 넣어주는 어노테이션
+        user: User?,
+        model: Model
+    ): String {
 
-        user?.let {
-            userRepository.save(it)
-            val _user = User()
 
-            model.addAttribute("user", _user)
-            return "form/index"
-        }
-
-        val user = User(null, null, null)
-
-        if (userid != null) {
-            user.name = "yun do un"
-            user.email = "ehdns1133@naver.com"
-            user.password = "sexyman"
+        val user = if (userid == null) {
+            User(null, null, null)
+        }else{
+            userRepository.findByIdOrNull(userid)
         }
 
         model.addAttribute("user", user)
         return "form/index"
     }
+
+
+    @RequestMapping(
+        value = ["/form"],
+        method = [RequestMethod.POST]
+    )
+    fun postForm(
+        user: User?,
+        model: Model
+    ): String {
+
+        user?.let {
+            userRepository.save(it)
+        }
+        val _user = User()
+
+        model.addAttribute("user", _user)
+        return "form/index"
+    }
+
 }
