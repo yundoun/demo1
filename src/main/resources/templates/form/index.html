@@ -8,18 +8,19 @@
 <body>
 <div class="container">
     <h1>Register</h1>
-    <form th:action="@{/register}" method="post">
+<!--     form 전체를 자바 객체로 치환하기 위함-->
+    <form th:object="${user}" th:action="@{/form}" th:method="POST" >
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" id="name" name="name" required th:value="${user.name}">
+            <input type="text" id="name" name="name" required th:field="*{name}">
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email"  required th:value="${user.email}">
+            <input type="email" id="email" name="email"  required th:field="*{email}">
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required th:value="${user.password}">
+            <input type="password" id="password" name="password" required th:field="*{password}">
         </div>
         <div class="form-group">
             <label for="confirm-password">Confirm Password</label>
